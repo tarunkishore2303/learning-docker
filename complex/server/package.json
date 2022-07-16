@@ -7,7 +7,7 @@
 		"nodemon": "2.0.19"
 	},
 	"scripts": {
-		"dev": "nodemon",
+		"dev": "nodemon -L",
 		"start": "node index.js"
 	}
 }

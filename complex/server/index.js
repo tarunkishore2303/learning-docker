@@ -23,24 +23,37 @@ const pgClient = new Pool({
 
 pgClient.on("error", () => console.log("Lost connections"));
 
-pgClient
-	.query("CREATE TABLE IF NOT EXISTS values(number INT)")
-	.catch((err) => console.log(err));
+pgClient.on("connect", (client) => {
+	client
+		.query("CREATE TABLE IF NOT EXISTS values(number INT)")
+		.catch((err) => console.log(err));
+});
 
 // Redis setup
 
 const redis = require("redis");
-
-const client = redis.createClient({
+var client = redis.createClient({
 	url: `redis://${keys.redisHost}:${keys.redisPort}`,
 });
-
-async () => {
-	client.on("error", (err) => console.log(err));
-	await client.connect();
-};
+(async () => {
+	try {
+		await client.connect();
+		console.log("connected");
+	} catch (err) {
+		console.error(err);
+	}
+})();
 
 const publisher = client.duplicate();
+
+(async () => {
+	try {
+		await publisher.connect();
+		console.log("connected");
+	} catch (err) {
+		console.error(err);
+	}
+})();
 
 app.get("/", (req, res) => {
 	res.send("<h1> Hi </h1>");
@@ -52,7 +65,7 @@ app.get("/values/all", async (req, res) => {
 });
 
 app.get("/values/current", async (req, res) => {
-	await client.hgetall("values", (err, values) => {
+	await client.hGetAll("values", (err, values) => {
 		res.send(values);
 	});
 });
@@ -62,7 +75,7 @@ app.post("/values", async (req, res) => {
 	if (parseInt(index) > 40) {
 		return res.status(422).send("Very high index !");
 	}
-	await client.hset("values", index, "Nothing yet !");
+	await client.hSet("values", index, "Nothing yet !");
 	await publisher.publish("insert", index);
 	pgClient.query("INSERT INTO values(number) VALUES($1)", [index]);
 

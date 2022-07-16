@@ -32,6 +32,7 @@ services:
       - PGPASSWORD=postgres_password
       - PGPORT=5432
   client:
+    stdin_open: true
     environment:
       - WDS_SOCKET_PORT=0
     build:

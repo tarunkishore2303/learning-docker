@@ -55,6 +55,7 @@ class Fib extends Component {
 	render() {
 		return (
 			<div>
+				<h2>Fib calci</h2>
 				<form onSubmit={this.handleSubmit}>
 					<label>Enter your index:</label>
 					<input

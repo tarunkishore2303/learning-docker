@@ -7,6 +7,6 @@ metadata:
 spec:
   containers:
     - name: client
-      image: tarunkishore/multi-client
+      image: tarunkishore/multi-worker
       ports:
         - containerPort: 3000

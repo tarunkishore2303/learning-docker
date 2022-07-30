@@ -12,7 +12,7 @@ spec:
       labels:
         component: server
     spec:
-      conatainers:
+      containers:
         - name: server
           image: tarunkishore/multi-server
           ports:

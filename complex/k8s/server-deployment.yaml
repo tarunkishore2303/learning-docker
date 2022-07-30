@@ -12,8 +12,26 @@ spec:
       labels:
         component: server
     spec:
-      conatainers:
+      containers:
         - name: server
           image: tarunkishore/multi-server
           ports:
             - containerPort: 5000
+          env:
+            - name: REDIS_HOST
+              value: redis=cluster-ip-service
+            - name: REDIS_PORT
+              value: '6379'
+            - name: PGUSER
+              value: postgres
+            - name: PGHOST
+              value: potgres-cluster-ip-service
+            - name: PGPORT
+              value: '5432'
+            - name: PGDATBASE
+              value: postgres
+            - name: POSTGRES_PASSWORD
+              valueFrom: 
+                secretKeyRef:
+                  name: pgpassword
+                  key: PGPASSWORD
